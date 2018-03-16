@@ -5,21 +5,44 @@
 # @File    : views.py
 # @Software: PyCharm
 
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, flash
+from forms import LoginForm, RegisterForm, ArtForm
+from models import User, db
+from werkzeug.security import generate_password_hash
+import datetime
 
 app = Flask(__name__)
+app.config["SECRET_KEY"] = "12345678"
 
 
 # 登录
 @app.route('/login/', methods=["GET", "POST"])
 def login():
-    return render_template("login.html", title="登录")
+    form = LoginForm()
+    return render_template("login.html", title="登录", form=form)
 
 
 # 注册
 @app.route('/register/', methods=["GET", "POST"])
 def register():
-    return render_template("register.html", title="注册")
+    form = RegisterForm()
+    if form.validate_on_submit():
+        data = form.data
+        # 保存数据
+        user = User(
+            name=data["name"],
+            pwd=generate_password_hash(data["pwd"]),
+            addtime=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        )
+        db.session.add(user)
+        db.session.commit()
+        # 定义一个会话的闪现
+        flash("注册成功，请登录！", "ok")
+        return redirect('/login/')
+    else:
+        flash("请输入正确信息", "err")
+        # return redirect("/register/")
+    return render_template("register.html", title="注册", form=form)
 
 
 # 退出(302跳转到登录页面)
@@ -31,7 +54,8 @@ def logout():
 # 发布文章
 @app.route('/art/add/', methods=["GET", "POST"])
 def art_add():
-    return render_template("art_add.html", title="发布文章")
+    form = ArtForm()
+    return render_template("art_add.html", title="发布文章", form=form)
 
 
 # 编辑文章
