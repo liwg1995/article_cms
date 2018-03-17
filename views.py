@@ -81,13 +81,14 @@ def art_list():
 @app.route('/codes/', methods=["GET"])
 def codes():
     from codes import Codes
-    c = Codes
-    info  = c.create_code()
-    image = os.path.join(os.path.dirname(__file__),"static/code") + "/" + info["img_name"]
-    with open(image) as f:
+    c = Codes()
+    info = c.create_code()
+    image = os.path.join(os.path.dirname(__file__), "static/code") + "/" + info["img_name"]
+    with open(image,"rb") as f:
         image = f.read()
     session["code"] = info["code"]
-    return Response(image,mimetype="jpeg")
+    return Response(image, mimetype="jpeg")
+
 
 if __name__ == "__main__":
     app.run(debug=True)

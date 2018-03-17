@@ -41,7 +41,7 @@ class Codes:
         return (random.randint(32, 127), random.randint(32, 127), random.randint(32, 127))
 
     # 生成验证码
-    def create_code(self,*args):
+    def create_code(self):
         width = 240
         height = 60
         # 创建一个图片
