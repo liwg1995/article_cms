@@ -9,6 +9,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, SelectField, FileField, TextAreaField
 from wtforms.validators import DataRequired,EqualTo,ValidationError
 from models import User
+from flask import session
 
 """
 登录表单：
@@ -121,7 +122,13 @@ class RegisterForm(FlaskForm):
         if user > 0:
             raise ValidationError("账号已存在，不能重新注册")
 
-
+    # 自定义验证码验证功能
+    def validate_code(self,field):
+        code = field.data
+        if not session.has_key("code"):
+            raise ValidationError("没有验证码")
+        if session.has_key("code") and session["code"].lower() != code.lower():
+            raise ValidationError("验证码错误")
 """
 发布文章表单
 1.标题

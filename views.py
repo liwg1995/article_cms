@@ -5,11 +5,12 @@
 # @File    : views.py
 # @Software: PyCharm
 
-from flask import Flask, render_template, redirect, flash
+from flask import Flask, render_template, redirect, flash, session, Response
 from forms import LoginForm, RegisterForm, ArtForm
 from models import User, db
 from werkzeug.security import generate_password_hash
 import datetime
+import os
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "12345678"
@@ -75,6 +76,18 @@ def art_del(id):
 def art_list():
     return render_template("art_list.html", title="文章列表")
 
+
+# 验证码
+@app.route('/codes/', methods=["GET"])
+def codes():
+    from codes import Codes
+    c = Codes
+    info  = c.create_code()
+    image = os.path.join(os.path.dirname(__file__),"static/code") + "/" + info["img_name"]
+    with open(image) as f:
+        image = f.read()
+    session["code"] = info["code"]
+    return Response(image,mimetype="jpeg")
 
 if __name__ == "__main__":
     app.run(debug=True)
