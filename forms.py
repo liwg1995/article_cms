@@ -129,7 +129,7 @@ class RegisterForm(FlaskForm):
         if "code" not in session:
             raise ValidationError("没有验证码")
         # if session.has_key("code") and session["code"].lower() != code.lower():python2写法
-        if "code" in session and session["code"].lower() != code.lower():
+        if "code" in session and session["code"].lower() != code.lower(): # 从views中获取session的"code"
             raise ValidationError("验证码错误")
 """
 发布文章表单
