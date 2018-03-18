@@ -7,6 +7,7 @@
 from flask import Flask
 import pymysql
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import check_password_hash
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:root@localhost:3306/artcms_pro"
@@ -33,6 +34,8 @@ class User(db.Model):
     def __repr__(self):
         return "<User %r>" % self.name
 
+    def check_pwd(self, pwd):
+        return check_password_hash(self.pwd, pwd)
 
 """
 文章表
