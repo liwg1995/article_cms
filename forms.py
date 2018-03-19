@@ -169,6 +169,7 @@ class ArtForm(FlaskForm):
         ],
         choices=[(1, "科技"), (2, "搞笑"), (3, "军事")],
         default=1,
+        coerce=int,
         render_kw={
             "class": "form-control"
         }

@@ -104,7 +104,7 @@ def art_add():
         # 保存文件
         form.logo.data.save(app.config["UP"] + "/" + logo)
         # 获取用户id
-        user = User.query.filter_by(name=session["user"]).fist()
+        user = User.query.filter_by(name=session["user"]).first()
         user_id = user.id
         # 保存数据
         art = Art(
@@ -113,7 +113,7 @@ def art_add():
             user_id = user_id,
             logo = logo,
             content = data["content"],
-            addtime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M%S")
+            addtime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         )
         db.session.add(art)
