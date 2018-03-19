@@ -13,14 +13,17 @@
 
 from flask import Flask, render_template, redirect, flash, session, Response, url_for, request
 from forms import LoginForm, RegisterForm, ArtForm
-from models import User, db
+from models import User, db,Art
 from werkzeug.security import generate_password_hash
+from werkzeug.utils import secure_filename
 import datetime
 import os
 from functools import wraps
+import uuid
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "12345678"
+app.config['UP'] = os.path.join(os.path.dirname(__file__), "static/uploads")
 
 
 # 登录装饰器，避免没有登录的情况下仍能访问/art/list或者/art/add/
@@ -77,11 +80,45 @@ def logout():
     return redirect("/login/")
 
 
+# 上传logo的时候，更改文件名称
+def change_name(name):
+    info = os.path.splitext(name)
+    # 文件名称: 时间格式字符串 ＋ 唯一字符串 ＋ 后缀名
+    name = datetime.datetime.now().strftime("%Y%m%d%H%M%S") + str(uuid.uuid4().hex) + info[-1]
+    return name
+
+
 # 发布文章
 @app.route('/art/add/', methods=["GET", "POST"])
 @user_login_req
 def art_add():
     form = ArtForm()
+    # form.cate.process_data(1)
+    if form.validate_on_submit():
+        data = form.data
+        # 上传logo
+        file = secure_filename(form.logo.data.filename)
+        logo = change_name(file)
+        if not os.path.exists(app.config["UP"]):
+            os.makedirs(app.config["UP"])
+        # 保存文件
+        form.logo.data.save(app.config["UP"] + "/" + logo)
+        # 获取用户id
+        user = User.query.filter_by(name=session["user"]).fist()
+        user_id = user.id
+        # 保存数据
+        art = Art(
+            title = data["title"],
+            cate = data["cate"],
+            user_id = user_id,
+            logo = logo,
+            content = data["content"],
+            addtime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M%S")
+
+        )
+        db.session.add(art)
+        db.session.commit()
+        flash("发布成功","ok")
     return render_template("art_add.html", title="发布文章", form=form)
 
 

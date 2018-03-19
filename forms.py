@@ -151,7 +151,9 @@ class RegisterForm(FlaskForm):
 class ArtForm(FlaskForm):
     title = StringField(
         label="标题",
-        validators=[],
+        validators=[
+            DataRequired("标题不能为空")
+        ],
         description="标题",
         render_kw={
             "class": "form-control",
@@ -162,9 +164,11 @@ class ArtForm(FlaskForm):
     cate = SelectField(
         label="分类",
         description="分类",
-        validators=[],
+        validators=[
+            DataRequired("分类不能为空")
+        ],
         choices=[(1, "科技"), (2, "搞笑"), (3, "军事")],
-        default=3,
+        default=1,
         render_kw={
             "class": "form-control"
         }
@@ -172,7 +176,9 @@ class ArtForm(FlaskForm):
     logo = FileField(
         label="封面",
         description="封面",
-        validators=[],
+        validators=[
+            DataRequired("封面不能为空")
+        ],
         render_kw={
             "class": "form-control-file"
         }
@@ -180,7 +186,9 @@ class ArtForm(FlaskForm):
     content = TextAreaField(
         label="内容",
         description="内容",
-        validators=[],
+        validators=[
+            DataRequired("内容不能为空")
+        ],
         render_kw={
             "style": "height:300px;",
             "id": "content"
