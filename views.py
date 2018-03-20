@@ -155,7 +155,11 @@ def art_edit(id):
 @app.route('/art/del/<int:id>/', methods=["GET"])
 @user_login_req
 def art_del(id):
-    return redirect("/art/list")
+    art = Art.query.get_or_404(int(id))
+    db.session.delete(art)
+    db.session.commit()
+    flash("删除《%s》成功！" % art.title,"ok")
+    return redirect("/art/list/1")
 
 
 # 文章列表

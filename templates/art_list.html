@@ -36,7 +36,7 @@
                 <td>{{ v.addtime }}</td>
                 <td>
                     <a href="{{ url_for('art_edit',id=v.id) }}" class="btn btn-sm btn-outline-warning">编辑</a>
-                    <button class="btn btn-sm btn-outline-danger">删除</button>
+                    <a href="{{ url_for('art_del',id=v.id) }}" class="btn btn-sm btn-outline-danger">删除</a>
                 </td>
             </tr>
 
