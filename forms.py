@@ -6,7 +6,7 @@
 # @Software: PyCharm
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, SelectField, FileField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, SelectField, FileField, TextAreaField,IntegerField
 from wtforms.validators import DataRequired,EqualTo,ValidationError
 from models import User
 from flask import session
@@ -197,6 +197,67 @@ class ArtForm(FlaskForm):
     )
     submit = SubmitField(
         "发布文章",
+        render_kw={
+            "class": "btn btn-primary"
+        }
+    )
+
+
+class ArtEditForm(FlaskForm):
+    id = IntegerField(
+        label="编号",
+        validators=[
+          DataRequired("编号不能为空")
+        ],
+    )
+    title = StringField(
+        label="标题",
+        validators=[
+            DataRequired("标题不能为空")
+        ],
+        description="标题",
+        render_kw={
+            "class": "form-control",
+            "placeholder": "请输入文章标题"
+
+        }
+    )
+    cate = SelectField(
+        label="分类",
+        description="分类",
+        validators=[
+            DataRequired("分类不能为空")
+        ],
+        choices=[(1, "科技"), (2, "搞笑"), (3, "军事")],
+        default=1,
+        coerce=int,
+        render_kw={
+            "class": "form-control"
+        }
+    )
+    logo = FileField(
+        label="封面",
+        description="封面",
+        validators=[
+            DataRequired("封面不能为空")
+        ],
+        render_kw={
+            "class": "form-control-file"
+        }
+    )
+    content = TextAreaField(
+        label="内容",
+        description="内容",
+        validators=[
+            DataRequired("内容不能为空")
+        ],
+        render_kw={
+            "style": "height:300px;",
+            "id": "content"
+        }
+    )
+    submit = SubmitField(
+        "编辑文章",
         render_kw={
             "class": "btn btn-primary"
         }

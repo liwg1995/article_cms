@@ -12,7 +12,7 @@
 
 
 from flask import Flask, render_template, redirect, flash, session, Response, url_for, request
-from forms import LoginForm, RegisterForm, ArtForm
+from forms import LoginForm, RegisterForm, ArtForm,ArtEditForm
 from models import User, db,Art
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
@@ -126,7 +126,29 @@ def art_add():
 @app.route('/art/edit/<int:id>/', methods=["GET", "POST"])
 @user_login_req
 def art_edit(id):
-    return render_template("art_edit.html")
+    art = Art.query.get_or_404(int(id))
+    form = ArtEditForm()
+    if request.method == "GET":
+        form.content.data = art.content
+        form.cate.data = art.cate
+        form.logo.data = art.logo
+    if form.validate_on_submit():
+        data = form.data
+        # 上传logo
+        file = secure_filename(form.logo.data.filename)
+        logo = change_name(file)
+        if not os.path.exists(app.config["UP"]):
+            os.makedirs(app.config["UP"])
+        # 保存文件
+        form.logo.data.save(app.config["UP"] + "/" + logo)
+        art.logo = logo
+        art.title = data["title"]
+        art.content = data["content"]
+        art.cate = data["cate"]
+        db.session.add(art)
+        db.session.commit()
+        flash("修改成功！","ok")
+    return render_template("art_edit.html",form=form,title="编辑文章",art=art)
 
 
 # 删除文章
