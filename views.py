@@ -45,7 +45,7 @@ def login():
         data = form.data
         session["user"] = data["name"]
         flash("登录成功！", "ok")
-        return redirect("/art/list/")
+        return redirect("/art/list/1/")
     return render_template("login.html", title="登录", form=form)
 
 
@@ -137,10 +137,19 @@ def art_del(id):
 
 
 # 文章列表
-@app.route('/art/list/', methods=["GET"])
+@app.route('/art/list/<int:page>/', methods=["GET"])
 @user_login_req
-def art_list():
-    return render_template("art_list.html", title="文章列表")
+def art_list(page=None):
+    if page is None:
+        page = 1
+    user = User.query.filter_by(name=session["user"]).first()
+    page_data = Art.query.filter_by(
+        user_id=user.id
+    ).order_by(
+        Art.addtime.desc()
+    ).paginate(page=page,per_page=1)
+    cate = [(1, "科技"), (2, "搞笑"), (3, "军事")]
+    return render_template("art_list.html", title="文章列表",page_data=page_data,cate=cate)
 
 
 # 验证码

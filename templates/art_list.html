@@ -1,5 +1,6 @@
 {% extends "layout.html" %}
 
+{% import "page.html" as pg %}
 
 {% block css %}
 <style type="text/css">
@@ -23,15 +24,16 @@
         <th>管理操作</th>
     </tr>
     </thead>
-    {% for v in range(1,11) %}
+    {% for v in page_data.items %}
     <tr>
-        <td>火星发现淡水</td>
-        <td>科技</td>
+        <td>{{ v.title }}</td>
+        <td>{{ cate[v.cate-1][1] }}</td>
         <td>
-            <img data-src="holder.js/75x40">
+{#            <img data-src="holder.js/75x40">#}
+            <img src="/static/uploads/{{ v.logo }}" alt="" style="width: 75px;height: 40px;">
         </td>
-        <td>lwg</td>
-        <td>2018-03-02 23:00:00</td>
+        <td>{{ session["user"] }}</td>
+        <td>{{ v.addtime }}</td>
         <td>
             <button class="btn btn-sm btn-outline-warning">编辑</button>
             <button class="btn btn-sm btn-outline-danger">删除</button>
@@ -40,19 +42,22 @@
 
     {% endfor %}
 </table>
-<nav>
-    <ul class="pagination">
-        <li class="page-item"><a href="#" class="page-link">上一页</a></li>
-        <li class="page-item"><a href="#" class="page-link">1</a></li>
-        <li class="page-item"><a href="#" class="page-link">2</a></li>
-        <li class="page-item"><a href="#" class="page-link">3</a></li>
-        <li class="page-item"><a href="#" class="page-link">4</a></li>
-        <li class="page-item"><a href="#" class="page-link">5</a></li>
-        <li class="page-item"><a href="#" class="page-link">下一页</a></li>
-
-    </ul>
-</nav>
+{#<nav>#}
+{#    <ul class="pagination">#}
+{#        <li class="page-item"><a href="#" class="page-link">上一页</a></li>#}
+{#        <li class="page-item"><a href="#" class="page-link">1</a></li>#}
+{#        <li class="page-item"><a href="#" class="page-link">2</a></li>#}
+{#        <li class="page-item"><a href="#" class="page-link">3</a></li>#}
+{#        <li class="page-item"><a href="#" class="page-link">4</a></li>#}
+{#        <li class="page-item"><a href="#" class="page-link">5</a></li>#}
+{#        <li class="page-item"><a href="#" class="page-link">下一页</a></li>#}
+{##}
+{#    </ul>#}
+{#</nav>#}
+    {{ pg.page(page_data,"art_list") }}
 {% endblock %}
+
+
 
 {% block js %}
 <script>
